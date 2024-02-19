@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import { InboxOutlined } from '@ant-design/icons/lib/icons';
 import { message, open } from '@tauri-apps/api/dialog';
 import { readBinaryFile } from '@tauri-apps/api/fs';
-import { Button, Form, FormInstance, Input } from 'antd';
+import { Button, Form, FormInstance, Input, Switch } from 'antd';
 import { invoke } from '@tauri-apps/api';
 import { SettingOutlined } from '@ant-design/icons';
 
@@ -22,6 +22,12 @@ const Index: React.FC = () => {
     const bucket = useStore((state) => state.bucket);
     const setBucket = useStore((state) => state.setBucket);
 
+    const hasDomain = useStore((state) => state.hasDomain);
+    const setHasDomain = useStore((state) => state.setHasDomain);
+
+    const domain = useStore((state) => state.domain);
+    const setDomain = useStore((state) => state.setDomain);
+
     const [url, setUrl] = useState('');
     const [systemUrl, setSystemUrl] = useState('');
     const [ossUrl, setOssUrl] = useState('');
@@ -40,12 +46,16 @@ const Index: React.FC = () => {
     };
 
     const branchModalResult = async (result: boolean) => {
+        console.log(formRef.current!.getFieldValue('hasDomain'));
         if (result) {
             setModalOpenState(false);
             const appKey = formRef.current!.getFieldValue('app_key');
             const appSecret = formRef.current!.getFieldValue('app_secret');
             const appEndPoint = formRef.current!.getFieldValue('end_point');
             const appBucket = formRef.current!.getFieldValue('bucket');
+            const switchState = formRef.current!.getFieldValue('hasDomain');
+            const domainValue = formRef.current!.getFieldValue('domain');
+
             if (!appKey || !appSecret || !endPoint || !bucket) {
                 return;
             }
@@ -53,6 +63,14 @@ const Index: React.FC = () => {
             setSecret(appSecret);
             setEndPoint(appEndPoint);
             setBucket(appBucket);
+            setHasDomain(switchState);
+
+            console.log(switchState);
+            console.log(domainValue);
+            if (switchState) {
+                console.log(123);
+                setDomain(domainValue);
+            }
         } else {
             setModalOpenState(false);
         }
@@ -73,7 +91,17 @@ const Index: React.FC = () => {
 
     const upload = async () => {
         if (url) {
-            const res: string = await invoke('upload', { file: systemUrl });
+            const res: string = await invoke('upload', {
+                data: {
+                    appKey: key,
+                    appSecret: secret,
+                    endPoint,
+                    bucket,
+                    file: systemUrl,
+                    hasDomain,
+                    domain,
+                },
+            });
             await message(`上传成功,${res}`, { title: '上传结果', type: 'info' });
             setOssUrl(res);
             setSystemUrl('');
@@ -106,34 +134,54 @@ const Index: React.FC = () => {
                 beOpen={modalOpenState}
                 handleResult={branchModalResult}
             >
-                <Form className="mt-10" {...formItemLayout} style={{ maxWidth: 600 }} ref={formRef}>
+                <Form {...formItemLayout} style={{ maxWidth: 600 }} ref={formRef}>
                     <Form.Item
                         label="app_key"
                         name="app_key"
                         rules={[{ required: true, message: '分院名称不能为空' }]}
+                        initialValue={key}
                     >
-                        <Input value={key} />
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         label="app_secret"
                         name="app_secret"
                         rules={[{ required: true, message: 'imei不能为空' }]}
+                        initialValue={secret}
                     >
-                        <Input value={secret} />
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         label="end_point"
                         name="end_point"
                         rules={[{ required: true, message: 'imei不能为空' }]}
+                        initialValue={endPoint}
                     >
-                        <Input value={endPoint} />
+                        <Input />
                     </Form.Item>
                     <Form.Item
                         label="bucket"
                         name="bucket"
                         rules={[{ required: true, message: 'imei不能为空' }]}
+                        initialValue={bucket}
                     >
-                        <Input value={bucket} />
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        label="是否自定义域名"
+                        name="hasDomain"
+                        valuePropName="checked"
+                        initialValue={hasDomain}
+                    >
+                        <Switch />
+                    </Form.Item>
+                    <Form.Item
+                        label="自定义域名"
+                        name="domain"
+                        rules={[{ required: false, message: 'imei不能为空' }]}
+                        initialValue={domain}
+                    >
+                        <Input />
                     </Form.Item>
                 </Form>
             </ModalComponent>

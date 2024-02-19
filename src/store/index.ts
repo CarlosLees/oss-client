@@ -13,6 +13,12 @@ export interface StoreProps {
 
     bucket: string;
     setBucket: (value: string) => void;
+
+    hasDomain: boolean;
+    setHasDomain: (value: boolean) => void;
+
+    domain: string;
+    setDomain: (value: string) => void;
 }
 
 export const useStore = create(
@@ -20,12 +26,21 @@ export const useStore = create(
         (set) => ({
             key: '',
             setKey: (key: string) => set({ key }),
+
             secret: '',
             setSecret: (secret: string) => set({ secret }),
+
             endPoint: '',
             setEndPoint: (endPoint: string) => set({ endPoint }),
+
             bucket: '',
             setBucket: (bucket: string) => set({ bucket }),
+
+            hasDomain: true,
+            setHasDomain: (hasDomain: boolean) => set({ hasDomain }),
+
+            domain: '',
+            setDomain: (domain: string) => set({ domain }),
         }),
         { name: 'oss' },
     ),
