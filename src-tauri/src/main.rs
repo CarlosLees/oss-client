@@ -10,11 +10,7 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-// end_point: "oss-cn-qingdao.aliyuncs.com"
-// access_key_id: "LTAI4G2yHvcj7ZpeHseBQZdH"
-// access_key_secret: "d55e6RYnHemDGACxi8Nr1s4OOnyWTa"
-// bucket_name: "println-g1-carlos"
-// access_endpoint: "println-g1-carlos.oss-cn-qingdao.aliyuncs.com"
+
 
 #[tauri::command]
 async fn upload(file:&str) -> Result<String,String>{
