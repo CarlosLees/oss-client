@@ -1,0 +1,5 @@
+html,
+body,
+#app {
+    @apply bg-[color:var(--color-bg-1)];
+}

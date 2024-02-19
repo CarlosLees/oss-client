@@ -1,0 +1,7 @@
+@import url('tailwindcss/base.css');
+@import url('./tailwind/base.css');
+@import url('tailwindcss/components.css');
+@import url('./tailwind/components.css');
+@import url('tailwindcss/utilities.css');
+@import url('./tailwind/utilities.css');
+@import url('./app.css');
