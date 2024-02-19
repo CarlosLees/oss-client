@@ -27,8 +27,8 @@ async fn upload(file:&str) -> Result<String,String>{
     #[cfg(target_os = "linux")]
     let file_name = file.split("/").last().unwrap();
 
-    let oss = OSS::new("LTAI4G2yHvcj7ZpeHseBQZdH","d55e6RYnHemDGACxi8Nr1s4OOnyWTa",
-    "oss-cn-qingdao.aliyuncs.com","println-g1-carlos");
+    let oss = OSS::new("","",
+    "","");
     let builder = RequestBuilder::new()
         .with_expire(60);
     if let Ok(_) = oss.put_object_from_file(file_name, file, builder).await {
